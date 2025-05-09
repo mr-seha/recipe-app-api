@@ -4,27 +4,28 @@ LABEL maintainer="Mohammadreza Souri"
 ENV PYTHONUNBUFFERED=1
 ARG DEV=true
 
-COPY ./requirements.txt /tmp/requirements.txt
-COPY ./requirements.dev.txt /tmp/requirements.dev.txt
-COPY ./app /app
-WORKDIR /app
-
 EXPOSE 8000
-
-RUN python -m venv /py
-RUN /py/bin/pip install --upgrade pip
 
 RUN apk add --update --no-cache postgresql-client
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
     build-base postgresql-dev musl-dev
 
+COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+
+RUN python -m venv /py
+RUN /py/bin/pip install --upgrade pip
+
 RUN /py/bin/pip install -r /tmp/requirements.txt
 RUN if [ $DEV = "true" ]; \
     then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
     fi
- 
+
 RUN rm -rf /tmp 
-RUN apk del .tmp-build-deps 
+RUN apk del .tmp-build-deps
+
+COPY ./app /app
+WORKDIR /app
 
 RUN adduser \
     --disabled-password \
