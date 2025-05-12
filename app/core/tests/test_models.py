@@ -5,12 +5,20 @@ from django.test import TestCase
 from core.models import Recipe
 
 
+def create_user(email="test@gmail.com", password="1234abcd1234"):
+    user = get_user_model().objects.create_user(
+        email=email,
+        password=password,
+    )
+    return user
+
+
 class ModelTests(TestCase):
     def test_create_user(self):
         email = "test@gmail.com"
         password = "1234abcd1234"
 
-        user = get_user_model().objects.create_user(
+        user = create_user(
             email=email,
             password=password,
         )
@@ -25,7 +33,7 @@ class ModelTests(TestCase):
             ["test3@GMAIL.com", "test3@gmail.com"],
         ]
         for email, expected in sample_emails:
-            user = get_user_model().objects.create_user(
+            user = create_user(
                 email=email,
                 password="password1"
             )
@@ -33,7 +41,7 @@ class ModelTests(TestCase):
 
     def test_new_user_without_email_raise_error(self):
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user(email="", password="1234test")
+            create_user(email="", password="1234test")
 
     def test_create_superuser(self):
         email = "test@gmail.com"
@@ -46,10 +54,9 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
 
     def test_create_recipe(self):
-        user = get_user_model().objects.create(
+        user = create_user(
             email="test@gmail.com",
             password="test_pass1",
-            name="me",
         )
 
         recipe = Recipe.objects.create(
