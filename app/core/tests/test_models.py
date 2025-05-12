@@ -25,7 +25,10 @@ class ModelTests(TestCase):
             ["test3@GMAIL.com", "test3@gmail.com"],
         ]
         for email, expected in sample_emails:
-            user = get_user_model().objects.create_user(email=email, password="password1")
+            user = get_user_model().objects.create_user(
+                email=email,
+                password="password1"
+            )
             self.assertEqual(user.email, expected)
 
     def test_new_user_without_email_raise_error(self):
@@ -35,7 +38,10 @@ class ModelTests(TestCase):
     def test_create_superuser(self):
         email = "test@gmail.com"
         password = "test1234"
-        user = get_user_model().objects.create_superuser(email=email, password=password)
+        user = get_user_model().objects.create_superuser(
+            email=email,
+            password=password
+        )
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
 

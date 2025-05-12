@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from rest_framework import generics, authentication
 from rest_framework import permissions
 from rest_framework.authtoken import views

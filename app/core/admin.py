@@ -9,13 +9,23 @@ class UserAdmin(CustomUserAdmin):
     list_display = ["email", "name", "is_staff", "is_superuser", "is_active"]
     ordering = ["id"]
     fieldsets = [(None, {"fields": ["email", "name"]}),
-                 ("دسترسی ها", {"fields": ["is_staff", "is_superuser", "is_active"]}),
+                 ("دسترسی ها",
+                  {"fields": ["is_staff", "is_superuser", "is_active"]}
+                  ),
                  ("تاریخ ها", {"fields": ["last_login"]}),
                  ]
     readonly_fields = ["last_login"]
     add_fieldsets = [
         [None, {
-            "fields": ["email", "name", "password1", "password2", "is_active", "is_superuser", "is_staff"],
+            "fields": [
+                "email",
+                "name",
+                "password1",
+                "password2",
+                "is_active",
+                "is_superuser",
+                "is_staff"
+            ],
             "classes": ["wide", ]
         }]
     ]

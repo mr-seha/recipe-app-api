@@ -53,7 +53,10 @@ class PublicUserAPITest(TestCase):
 
         response = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        user_exists = get_user_model().objects.filter(email=payload["email"]).exists()
+        user_exists = get_user_model().objects.filter(
+            email=payload["email"]
+        ).exists()
+
         self.assertFalse(user_exists)
 
     def test_create_token_for_user_returns_200(self):
@@ -112,7 +115,10 @@ class PrivateUserAPITest(TestCase):
 
     def test_method_post_not_allowed_in_profile_and_returns_405(self):
         response = self.client.post(ME_URL, {})
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
     def test_update_user_profile(self):
         payload = {
