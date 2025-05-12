@@ -1,0 +1,21 @@
+from rest_framework import serializers
+
+from core.models import Recipe
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ["id", "title", "time_minutes", "price", "link"]
+        read_only_fields = ["id"]
+
+
+class RecipeDetailSerializer(RecipeSerializer):
+    class Meta(RecipeSerializer.Meta):
+        RecipeSerializer.Meta.fields += ["description"]
+
+    # def create(self, validated_data):
+    #     validated_data["user"] = self.context["user"]
+    #     return super().create(validated_data)
+
+
