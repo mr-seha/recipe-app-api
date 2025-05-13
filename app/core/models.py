@@ -61,6 +61,19 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         verbose_name="کاربر"
     )
+    tags = models.ManyToManyField('Tag', verbose_name="تگ")
 
     def __str__(self):
         return self.title
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=255, verbose_name="نام")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="کاربر"
+    )
+
+    def __str__(self):
+        return self.name

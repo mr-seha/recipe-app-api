@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from core.models import Recipe
+from core.models import Recipe, Tag
 
 
 def create_user(email="test@gmail.com", password="1234abcd1234"):
@@ -68,3 +68,9 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(recipe.title, str(recipe))
+
+    def test_create_tag(self):
+        user = create_user()
+        tag = Tag.objects.create(user=user, name="new tag")
+
+        self.assertEqual(str(tag), tag.name)
