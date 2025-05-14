@@ -77,3 +77,20 @@ class PrivateTagsAPITest(TestCase):
 
         tag.refresh_from_db()
         self.assertEqual(tag.name, payload["name"])
+
+    def test_delete_tag(self):
+        tag = create_tag(self.user)
+
+        response = self.client.delete(tag_detail_url(tag.id))
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Tag.objects.filter(id=tag.id).exists())
+
+    def test_delete_other_user_tag_forbidden(self):
+        other_user = create_user(email="other@yahoo.com")
+        tag = create_tag(other_user)
+
+        response = self.client.delete(tag_detail_url(tag.id))
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertTrue(Tag.objects.filter(id=tag.id).exists())
