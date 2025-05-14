@@ -1,12 +1,17 @@
-from rest_framework.test import APIClient
-from django.test import TestCase
-from rest_framework import status
 from django.contrib.auth import get_user_model
-from core.models import Tag
+from django.test import TestCase
 from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from core.models import Tag
 from recipe.serializers import TagSerializer
 
 TAGS_URL = reverse("recipe:tag-list")
+
+
+def tag_detail_url(tag_id):
+    return reverse("recipe:tag-detail", args=[tag_id])
 
 
 def create_user(email="test@gmail.com", password="12345test"):
@@ -61,3 +66,14 @@ class PrivateTagsAPITest(TestCase):
         self.assertEqual(response.data[0]["id"], tag.id)
         self.assertEqual(response.data[0]["name"], tag.name)
         self.assertEqual(len(response.data), 1)
+
+    def test_update_tag(self):
+        tag = create_tag(self.user, name="my tag")
+
+        payload = {"name": "new name"}
+        response = self.client.patch(tag_detail_url(tag.id), payload)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        tag.refresh_from_db()
+        self.assertEqual(tag.name, payload["name"])
