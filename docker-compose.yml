@@ -22,7 +22,7 @@ services:
   db:
     image: postgres:17.4-alpine3.21
     volumes:
-      - dev-db-data:/var/lib/pgsql/data
+      - dev-db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=devdb
       - POSTGRES_USER=devuser
