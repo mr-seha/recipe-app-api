@@ -236,7 +236,11 @@ class PrivateRecipeAPITest(TestCase):
         tag_name = "tag1"
         payload = {"tags": [{"name": tag_name}]}
 
-        response = self.client.patch(detail_url(recipe.id), payload, format="json")
+        response = self.client.patch(
+            detail_url(recipe.id),
+            payload,
+            format="json",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         filtered_tag = Tag.objects.filter(
@@ -257,7 +261,11 @@ class PrivateRecipeAPITest(TestCase):
 
         payload = {"tags": [{"name": tag2.name}]}
 
-        response = self.client.patch(detail_url(recipe.id), payload, format="json")
+        response = self.client.patch(
+            detail_url(recipe.id),
+            payload,
+            format="json",
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         recipe.refresh_from_db()
@@ -272,7 +280,11 @@ class PrivateRecipeAPITest(TestCase):
         recipe.tags.add(tag)
 
         payload = {"tags": []}
-        response = self.client.patch(detail_url(recipe.id), payload, format="json")
+        response = self.client.patch(
+            detail_url(recipe.id),
+            payload,
+            format="json",
+        )
         recipe.refresh_from_db()
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
