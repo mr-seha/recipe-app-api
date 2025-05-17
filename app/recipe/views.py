@@ -1,12 +1,13 @@
+from rest_framework import mixins
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import ModelViewSet
+
 from core.models import Recipe, Tag
 from .serializers import (
     RecipeSerializer,
     RecipeDetailSerializer,
-    TagSerializer
+    TagSerializer,
 )
 
 
@@ -24,15 +25,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return RecipeSerializer
         return self.serializer_class
 
-    # def get_serializer_context(self):
-    #     return {"user": self.request.user}
-
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
-class TagViewSet(ModelViewSet):
-    queryset = Tag.objects.all().order_by("-name")
+class TagViewSet(
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Tag.objects.order_by("-name")
     serializer_class = TagSerializer
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
