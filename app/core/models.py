@@ -62,6 +62,10 @@ class Recipe(models.Model):
         verbose_name="کاربر"
     )
     tags = models.ManyToManyField('Tag', verbose_name="تگ")
+    ingredients = models.ManyToManyField(
+        'Ingredient',
+        verbose_name="مواد اولیه"
+    )
 
     def __str__(self):
         return self.title
@@ -69,6 +73,19 @@ class Recipe(models.Model):
 
 class Tag(models.Model):
     name = models.CharField(max_length=255, verbose_name="نام")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        verbose_name="کاربر"
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Ingredient(models.Model):
+    name = models.CharField(max_length=255, verbose_name="نام")
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
