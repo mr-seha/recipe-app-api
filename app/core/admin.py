@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin as CustomUserAdmin
-from .models import Recipe, Tag
+from .models import Recipe, Tag, Ingredient
 
 
 @admin.register(get_user_model())
@@ -38,4 +38,9 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
     pass
