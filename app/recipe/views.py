@@ -46,7 +46,11 @@ class TagViewSet(
         return self.queryset.filter(user=self.request.user)
 
 
-class IngredientViewSet(mixins.ListModelMixin, GenericViewSet):
+class IngredientViewSet(
+    mixins.ListModelMixin,
+    mixins.UpdateModelMixin,
+    GenericViewSet
+):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     authentication_classes = [TokenAuthentication]
