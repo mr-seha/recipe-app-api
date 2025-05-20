@@ -49,6 +49,7 @@ class TagViewSet(
 class IngredientViewSet(
     mixins.ListModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     GenericViewSet
 ):
     queryset = Ingredient.objects.all()
