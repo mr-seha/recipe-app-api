@@ -13,6 +13,10 @@ def create_user(email="test@gmail.com", password="test1234567"):
     return get_user_model().objects.create_user(email=email, password=password)
 
 
+def create_ingredient(user, name="ing"):
+    return Ingredient.objects.create(user=user, name=name)
+
+
 class PublicIngredientsAPITest(TestCase):
     def setUp(self):
         self.client = APIClient()
@@ -30,7 +34,7 @@ class PrivateIngredientsAPITest(TestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_retrieve_ingredient(self):
-        Ingredient.objects.create(user=self.user, name="ing")
+        create_ingredient(user=self.user)
 
         response = self.client.get(INGREDIENTS_URL)
 
@@ -42,9 +46,8 @@ class PrivateIngredientsAPITest(TestCase):
 
     def test_ingredient_limited_to_user(self):
         other_user = create_user(email="other@gmail.com", password="test1234")
-        Ingredient.objects.create(user=other_user, name="ing1")
-
-        ingredient2 = Ingredient.objects.create(user=self.user, name="ing2")
+        create_ingredient(user=other_user, name="ing1")
+        ingredient2 = create_ingredient(user=self.user, name="ing2")
 
         response = self.client.get(INGREDIENTS_URL)
 
