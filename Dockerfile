@@ -31,9 +31,9 @@ RUN adduser \
     --disabled-password \
     --no-create-home \
     django-user
-RUN mkdir -p /vol/web/media & \
-    mkdir -p /vol/web/static & \
-    chown -R django-user:django-user /vol/web & \
+RUN mkdir -p /vol/web/media && \
+    mkdir -p /vol/web/static && \
+    chown -R django-user:django-user /vol/web && \
     chmod -R 755 /vol
 
 ENV PATH="/py/bin:$PATH"
