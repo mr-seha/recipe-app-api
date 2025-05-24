@@ -6,9 +6,9 @@ ARG DEV=true
 
 EXPOSE 8000
 
-RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache postgresql-client jpeg-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-    build-base postgresql-dev musl-dev
+    build-base postgresql-dev musl-dev zlib zlib-dev
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
