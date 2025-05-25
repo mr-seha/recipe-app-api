@@ -6,6 +6,14 @@ from django.contrib.auth.models import (
 
 )
 from django.db import models
+import os
+import uuid
+
+
+def recipe_image_file_path(instance, file_name):
+    ext = os.path.splitext(file_name)[1]
+    file_name = f"{uuid.uuid4()}{ext}"
+    return os.path.join("uploads", "recipe", file_name)
 
 
 class UserManager(BaseUserManager):
@@ -65,6 +73,10 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         'Ingredient',
         verbose_name="مواد اولیه"
+    )
+    image = models.ImageField(
+        upload_to=recipe_image_file_path,
+        null=True
     )
 
     def __str__(self):
