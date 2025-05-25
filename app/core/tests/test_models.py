@@ -7,7 +7,9 @@ from core.models import (
     Ingredient,
     Recipe,
     Tag,
+    recipe_image_file_path,
 )
+from unittest.mock import patch
 
 
 def create_user(email="test@gmail.com", password="1234abcd1234"):
@@ -88,3 +90,11 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(ingredient), ingredient.name)
+
+    @patch("core.models.uuid.uuid4")
+    def test_recipe_file_name_uuid(self, mock_uuid):
+        uuid = "test_uuid"
+        mock_uuid.return_value = uuid
+        file_path = recipe_image_file_path(None, "example.jpg")
+
+        self.assertEqual(file_path, f"uploads/recipe/{uuid}.jpg")
