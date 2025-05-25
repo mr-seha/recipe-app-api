@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -9,7 +10,6 @@ from core.models import (
     Tag,
     recipe_image_file_path,
 )
-from unittest.mock import patch
 
 
 def create_user(email="test@gmail.com", password="1234abcd1234"):
