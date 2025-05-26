@@ -1,5 +1,8 @@
+import tempfile
 from decimal import Decimal
+from pathlib import Path
 
+from PIL import Image
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -17,6 +20,10 @@ RECIPES_URL = reverse("recipe:recipe-list")
 
 def detail_url(recipe_id):
     return reverse("recipe:recipe-detail", args=[recipe_id])
+
+
+def image_upload_url(recipe_id):
+    return reverse("recipe:recipe-upload-image", args=[recipe_id])
 
 
 def create_user(**params):
@@ -418,3 +425,42 @@ class PrivateRecipeAPITest(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.ingredients.count(), 0)
+
+
+class ImageUploadTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user(
+            email="admin@gmail.com",
+            password="admin12345"
+        )
+        self.client.force_authenticate(user=self.user)
+        self.recipe = create_recipe(user=self.user)
+
+    def tearDown(self):
+        self.recipe.image.delete()
+
+    def test_upload_image(self):
+        url = image_upload_url(self.recipe.id)
+        with tempfile.NamedTemporaryFile(suffix=".jpg") as img_file:
+            img = Image.new('RGB', size=(10, 10))
+            img.save(img_file, format="JPEG")
+            img_file.seek(0)
+
+            payload = {"image": img_file}
+            response = self.client.post(url, payload, format="multipart")
+
+            self.recipe.refresh_from_db()
+
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertIn("image", response.data)
+            self.assertTrue(Path(self.recipe.image.path).exists())
+
+    def test_upload_image_bad_request(self):
+        payload = {"image": "nonimage"}
+        response = self.client.post(
+            image_upload_url(self.recipe.id),
+            payload,
+            format="multipart"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
