@@ -1,6 +1,6 @@
 # Django Advanced Course Practice
 
-This repository contains my personal practice and code snippets while following the **[Django Python: The Advanced Guide](https://www.udemy.com/course/django-python-advanced/)** course on Udemy.
+This repository contains my personal practice and code snippets while following the **[Build a Backend REST API with Python & Django - Advanced](https://www.udemy.com/course/django-python-advanced/)** course on Udemy.
 
 ## About
 
