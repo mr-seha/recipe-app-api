@@ -84,8 +84,15 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class RecipeDetailSerializer(RecipeSerializer):
     class Meta(RecipeSerializer.Meta):
-        RecipeSerializer.Meta.fields += ["description"]
+        RecipeSerializer.Meta.fields += ["description", "image"]
 
     # def create(self, validated_data):
     #     validated_data["user"] = self.context["user"]
     #     return super().create(validated_data)
+
+
+class RecipeImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ["id", "image"]
+        kwargs = {"image": {"required": True}}
