@@ -30,8 +30,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def split_params_to_list(self, text):
+        return [int(item) for item in text.split(",")]
+
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user).order_by("-id")
+        queryset = self.queryset
+        user = self.request.user
+
+        tags = self.request.query_params.get("tags")
+        ingredients = self.request.query_params.get("ingredients")
+
+        if tags:
+            tags = self.split_params_to_list(tags)
+            queryset = queryset.filter(tags__id__in=tags)
+
+        if ingredients:
+            ingredients = self.split_params_to_list(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredients)
+
+        return queryset.filter(user=user).order_by("-id").distinct()
 
     def get_serializer_class(self):
         if self.action == "list":
