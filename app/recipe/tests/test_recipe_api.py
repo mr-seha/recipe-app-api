@@ -426,6 +426,58 @@ class PrivateRecipeAPITest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(recipe.ingredients.count(), 0)
 
+    def test_filter_recipes_by_tags(self):
+        recipe1 = create_recipe(user=self.user, title="recipe1")
+        recipe2 = create_recipe(user=self.user, title="recipe2")
+
+        tag1 = Tag.objects.create(user=self.user, name="tag1")
+        tag2 = Tag.objects.create(user=self.user, name="tag2")
+        recipe1.tags.add(tag1)
+        recipe2.tags.add(tag2)
+
+        recipe3 = create_recipe(user=self.user, title="recipe3")
+
+        params = {"tags": f"{tag1.id},{tag2.id}"}
+        response = self.client.get(RECIPES_URL, params)
+
+        s1 = RecipeSerializer(recipe1)
+        s2 = RecipeSerializer(recipe2)
+        s3 = RecipeSerializer(recipe3)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(s1.data, response.data)
+        self.assertIn(s2.data, response.data)
+        self.assertNotIn(s3.data, response.data)
+
+    def test_filter_recipes_by_ingredients(self):
+        recipe1 = create_recipe(user=self.user, title="recipe1")
+        recipe2 = create_recipe(user=self.user, title="recipe2")
+
+        ingredient1 = Ingredient.objects.create(
+            user=self.user,
+            name="ingredient1"
+        )
+        ingredient2 = Ingredient.objects.create(
+            user=self.user,
+            name="ingredient2"
+        )
+        recipe1.ingredients.add(ingredient1)
+        recipe2.ingredients.add(ingredient2)
+
+        recipe3 = create_recipe(user=self.user, title="recipe3")
+
+        params = {"ingredients": f"{ingredient1.id},{ingredient2.id}"}
+        response = self.client.get(RECIPES_URL, params)
+
+        s1 = RecipeSerializer(recipe1)
+        s2 = RecipeSerializer(recipe2)
+        s3 = RecipeSerializer(recipe3)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(s1.data, response.data)
+        self.assertIn(s2.data, response.data)
+        self.assertNotIn(s3.data, response.data)
+
 
 class ImageUploadTest(TestCase):
     def setUp(self):
