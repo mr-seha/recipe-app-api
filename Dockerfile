@@ -2,16 +2,17 @@ FROM python:3.12.10-alpine3.21
 LABEL maintainer="Mohammadreza Souri"
 
 ENV PYTHONUNBUFFERED=1
-ARG DEV=true
+ARG DEV=false
 
 EXPOSE 8000
 
 RUN apk add --update --no-cache postgresql-client jpeg-dev
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-    build-base postgresql-dev musl-dev zlib zlib-dev
+    build-base postgresql-dev musl-dev zlib zlib-dev linux-headers
 
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./scripts /scripts
 
 RUN python -m venv /py
 RUN /py/bin/pip install --upgrade pip
@@ -34,7 +35,10 @@ RUN adduser \
 RUN mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol/web && \
-    chmod -R 755 /vol
+    chmod -R 755 /vol && \
+    chmod +x /scripts
 
-ENV PATH="/py/bin:$PATH"
+ENV PATH="/scripts:/py/bin:$PATH"
 USER django-user
+
+CMD ["run.sh"]
